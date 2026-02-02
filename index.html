@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haileybury Charity Book Competition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        main {
+            flex: 1;
+            padding: 3rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .houses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .house-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .house-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .house-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .house-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .book-pile {
+            min-height: 150px;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            justify-content: flex-start;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .book {
+            width: 60px;
+            height: 12px;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            border: 1px solid #654321;
+            margin: 1px 0;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .book:nth-child(2n) {
+            background: linear-gradient(135deg, #CD853F 0%, #DEB887 100%);
+        }
+
+        .book:nth-child(3n) {
+            background: linear-gradient(135deg, #A0522D 0%, #BC8F8F 100%);
+        }
+
+        .book-count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 1rem;
+        }
+
+        .admin-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e53e3e;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+            color: #2d3748;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .error {
+            color: #e53e3e;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .houses-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Haileybury Charity Book Competition</h1>
+    </header>
+
+    <main>
+        <div class="houses-grid" id="housesGrid"></div>
+    </main>
+
+    <button class="admin-btn" onclick="openAdminModal()">Update Books</button>
+
+    <footer>
+        🍕 Free Pizza for the House That Wins! 🍕
+    </footer>
+
+    <!-- Admin Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <h2>Update Book Counts</h2>
+            <div class="form-group">
+                <label for="accessCode">Access Code:</label>
+                <input type="password" id="accessCode" placeholder="Enter access code">
+                <div class="error" id="codeError"></div>
+            </div>
+            <div id="updateForm" style="display: none;">
+                <div id="houseInputs"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveUpdates()">Save Updates</button>
+                    <button class="btn btn-secondary" onclick="closeAdminModal()">Cancel</button>
+                </div>
+            </div>
+            <div class="btn-group" id="codeButtons">
+                <button class="btn btn-primary" onclick="verifyCode()">Verify Code</button>
+                <button class="btn btn-secondary" onclick="closeAdminModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default houses with colors and initial book counts
+        const defaultHouses = [
+            { name: 'Allenby', color: '#e74c3c', books: 0 },
+            { name: 'Batten', color: '#3498db', books: 0 },
+            { name: 'Bartle Frere', color: '#2ecc71', books: 0 },
+            { name: 'Colvin', color: '#f39c12', books: 0 },
+            { name: 'Edmonstone', color: '#9b59b6', books: 0 },
+            { name: 'Hailey', color: '#1abc9c', books: 0 },
+            { name: 'Kipling', color: '#e67e22', books: 0 },
+            { name: 'Lawrence', color: '#34495e', books: 0 },
+            { name: 'Melvill', color: '#c0392b', books: 0 },
+            { name: 'Thomason', color: '#16a085', books: 0 },
+            { name: 'Trevelyan', color: '#8e44ad', books: 0 },
+            { name: 'Wellington', color: '#2980b9', books: 0 }
+        ];
+
+        // Access code (change this to your desired code)
+        const ACCESS_CODE = 'haileybury2024';
+
+        // Load houses from localStorage or use defaults
+        function loadHouses() {
+            const stored = localStorage.getItem('haileyburyHouses');
+            return stored ? JSON.parse(stored) : defaultHouses;
+        }
+
+        // Save houses to localStorage
+        function saveHouses(houses) {
+            localStorage.setItem('haileyburyHouses', JSON.stringify(houses));
+        }
+
+        // Create book pile visualization
+        function createBookPile(count) {
+            const maxDisplay = 20;
+            const displayCount = Math.min(count, maxDisplay);
+            let html = '';
+            
+            for (let i = 0; i < displayCount; i++) {
+                html += '<div class="book"></div>';
+            }
+            
+            return html;
+        }
+
+        // Render houses on the page
+        function renderHouses() {
+            const houses = loadHouses();
+            const grid = document.getElementById('housesGrid');
+            
+            // Sort houses by book count (descending)
+            houses.sort((a, b) => b.books - a.books);
+            
+            grid.innerHTML = houses.map(house => `
+                <div class="house-card">
+                    <div class="house-logo" style="background: ${house.color}">
+                        ${house.name.charAt(0)}
+                    </div>
+                    <div class="house-name">${house.name}</div>
+                    <div class="book-pile">
+                        ${createBookPile(house.books)}
+                    </div>
+                    <div class="book-count">${house.books} books</div>
+                </div>
+            `).join('');
+        }
+
+        // Open admin modal
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.add('active');
+            document.getElementById('accessCode').value = '';
+            document.getElementById('codeError').textContent = '';
+            document.getElementById('updateForm').style.display = 'none';
+            document.getElementById('codeButtons').style.display = 'flex';
+        }
+
+        // Close admin modal
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('active');
+        }
+
+        // Verify access code
+        function verifyCode() {
+            const code = document.getElementById('accessCode').value;
+            const errorDiv = document.getElementById('codeError');
+            
+            if (code === ACCESS_CODE) {
+                errorDiv.textContent = '';
+                document.getElementById('codeButtons').style.display = 'none';
+                document.getElementById('updateForm').style.display = 'block';
+                renderUpdateForm();
+            } else {
+                errorDiv.textContent = 'Incorrect access code. Please try again.';
+            }
+        }
+
+        // Render update form
+        function renderUpdateForm() {
+            const houses = loadHouses();
+            const container = document.getElementById('houseInputs');
+            
+            container.innerHTML = houses.map((house, index) => `
+                <div class="form-group">
+                    <label for="house${index}">${house.name}:</label>
+                    <input type="number" id="house${index}" value="${house.books}" min="0">
+                </div>
+            `).join('');
+        }
+
+        // Save updates
+        function saveUpdates() {
+            const houses = loadHouses();
+            
+            houses.forEach((house, index) => {
+                const input = document.getElementById(`house${index}`);
+                house.books = parseInt(input.value) || 0;
+            });
+            
+            saveHouses(houses);
+            renderHouses();
+            closeAdminModal();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('adminModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAdminModal();
+            }
+        });
+
+        // Handle Enter key in access code input
+        document.getElementById('accessCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyCode();
+            }
+        });
+
+        // Initial render
+        renderHouses();
+    </script>
+</body>
+</html>
